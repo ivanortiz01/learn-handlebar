@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My Handle Bar Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="scripts/handlebars-1.0.rc.1.min.js"></script>
+</head>
+
+<body>
+    <div id="content-placeholder"></div>
+    <hr />
+    <div id="first-template">
+        <h1>{{title}}</h1>
+        <div class="body">
+            {{body}}
+        </div>
+    </div>
+
+    <hr />
+    <hr />
+
+    <div id="no-escaping-content-placeholder"></div>
+    <hr />
+    <div id="template-without-escaping">
+        <h1>{{{title}}}</h1>
+        <div class="body">
+            {{{body}}}
+        </div>
+    </div>
+
+    <hr />
+    <hr />
+
+    <div id="block-placeholder"></div>
+    <hr />
+    <div id="block-template">
+        <h1>{{title}}</h1>
+        <div class="body">
+            <ul>
+                {{#each users}}
+                <li>{{firstName}} {{lastName}}</li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+
+    <hr />
+    <hr />
+
+    <div id="path-placeholder"></div>
+    <hr />
+    <div id="path-template">
+        <h1>{{title}}</h1>
+        <h2>By {{author.name}}</h2>
+
+        <div class="body">
+            {{body}}
+        </div>
+    </div>
+
+    <hr />
+    <hr />
+
+    <div id="helper-placeholder"></div>
+    <hr />
+    <div id="helper-template">
+        <h1>{{title}}</h1>
+        <h1>By {{fullName author}}</h1>
+        <div class="body">{{body}}</div>
+
+        <h1>Comments</h1>
+
+        {{#each comments}}
+        <h2>By {{fullName author}}</h2>
+        <div class="body">{{body}}</div>
+        {{/each}}
+    </div>
+</body>
+
+<script type="text/javascript">
+
+    firtTemplate();
+    withOutEscapingTemplate();
+    blockTemplate();
+    pathTemplate();
+    helperTemplate();
+
+    function firtTemplate() {
+        var template = "#first-template";
+        var placeholder = "#content-placeholder";
+
+        var context = {
+            title: "First Template:",
+            body: "This is my first post!"
+        };
+
+        var source = $(template).html();
+        var template = Handlebars.compile(source);
+
+        var html = template(context);
+        $(placeholder).html(html)
+    }
+
+    function withOutEscapingTemplate() {
+        var template = "#template-without-escaping";
+        var placeholder = "#no-escaping-content-placeholder";
+
+        var context = {
+            title: "Template Without Escaping: All about <p> Tags",
+            body: "<p>This is a post about &lt;p&gt; tags</p>"
+        };
+
+        var source = $(template).html();
+        var template = Handlebars.compile(source);
+
+        var html = template(context);
+        $(placeholder).html(html)
+    }
+
+    function blockTemplate() {
+        var template = "#block-template";
+        var placeholder = "#block-placeholder";
+
+        var context = {
+            title: "Block Template:",
+            users: [
+                { username: "alan", firstName: "Alan", lastName: "Johnson", email: "alan@test.com" },
+                { username: "allison", firstName: "Allison", lastName: "House", email: "allison@test.com" },
+                { username: "ryan", firstName: "Ryan", lastName: "Carson", email: "ryan@test.com" }
+            ]
+        };
+
+        var source = $(template).html();
+        var template = Handlebars.compile(source);
+
+        var html = template(context);
+        $(placeholder).html(html)
+    }
+
+    function pathTemplate() {
+        var template = "#path-template";
+        var placeholder = "#path-placeholder";
+
+        var context = {
+            title: "Path Template:",
+            author: {
+                id: 47,
+                name: "Yehuda Katz"
+            },
+            body: "My first post. Wheeeee!"
+        };
+
+        var source = $(template).html();
+        var template = Handlebars.compile(source);
+
+        var html = template(context);
+        $(placeholder).html(html)
+    }
+
+    function helperTemplate() {
+        var template = "#helper-template";
+        var placeholder = "#helper-placeholder";
+
+        var context = {
+            title: "Helper Template:",
+            author: { firstName: "Alan", lastName: "Johnson" },
+            body: "I Love Handlebars",
+            comments: [{
+                author: { firstName: "Yehuda", lastName: "Katz" },
+                body: "Me too!"
+            }]
+        };
+
+        var source = $(template).html();
+        var template = Handlebars.compile(source);
+        Handlebars.registerHelper('fullName', function (person) {
+            return person.firstName + " " + person.lastName;
+        });
+
+        var html = template(context);
+        $(placeholder).html(html)
+    }
+</script>
+
+</html>
